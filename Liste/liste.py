@@ -51,6 +51,21 @@ class Liste:
         self.tete = self.queue.tete
         self.queue = self.queue.queue
 
+    def addQueue(self, val):
+        """ajoute une <valeur> en fin de liste"""
+        if self.tete is None:  # Si tete = none alors on lui ajoute la valeur de tete = val
+            self.tete = val
+        elif self.queue is None:  # Si tete = val et que queue = none alors self.queue = Liste(Val)
+            self.queue = Liste(val)
+        else:
+            queue = self.queue
+            while type(queue) is Liste:
+                if queue.queue is None:
+                    queue.queue = Liste(val)  # On ajoute ici la valeur Liste(val) dans la queue de queue
+                    break
+                queue = queue.queue
+
+
 def main():
     liste1 = Liste()
     print(liste1)
