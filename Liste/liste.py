@@ -36,6 +36,21 @@ class Liste:
         else:
             return 1 + self.queue.__len__()
 
+    def isEmpty(self):
+        """ Retourne True si la liste est vide et False dans le cas contraire"""
+        return self.tete is None
+
+    def addHead(self, valeur):
+        """ajoute une <valeur> en début de liste"""
+        l = Liste(valeur)
+        l.queue = Liste(self)
+        self.tete, self.queue = l.tete, l.queue
+
+    def deleteHead(self):
+        """supprime une <valeur> en fin de liste"""
+        self.tete = self.queue.tete
+        self.queue = self.queue.queue
+
 def main():
     liste1 = Liste()
     print(liste1)
