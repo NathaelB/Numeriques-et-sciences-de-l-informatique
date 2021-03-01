@@ -1,0 +1,18 @@
+{
+    "name": "pythonproject",
+    "version": "1.0.0",
+    "description": "",
+    "main": "tailwind.config.js",
+    "dependencies": {
+        "autoprefixer": "^10.0.4",
+        "postcss": "^8.1.14",
+        "tailwindcss": "^2.0.1"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "build-css": "tailwindcss build ./firstappnathael/static/css/styles.css -o ./firstappnathael/static/css/tailwind.css"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}

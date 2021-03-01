@@ -1,0 +1,41 @@
+{% extends "./layouts/layout.html" %} {% block container %}
+
+
+<div class=" flex items-center justify-center bg-white">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow">
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Recherche de Bulletin
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Rentre le
+                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
+            nom et prénom afin de trouver son bulletin
+          </a>
+            </p>
+        </div>
+
+        <form class="mt-8 space-y-6 rounded-md shadow-sm" action=".{{ url_for('affiche_bulletin')}}" method="post">
+            <form action=".{{ url_for('affiche_bulletin')}}" method="post">
+                <div>
+                  <div class="form-example">
+                    <label class="sr-only">Nom</label>
+                    <input type="text" class="form_control appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                        placeholder="Nom" name="nom" required>
+                  </div>
+                    <div class="form-example">
+                        <label class="sr-only">Prénom</label>
+                        <input type="text" class="form_control appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            placeholder="Prénom" name="prenom" required>
+                    </div>
+                </div>
+
+                <button class=" relative w-full space-y-4 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                    <input type="submit" class="bg-none" value="Rechercher">
+                </button>
+            </form>
+        </form>
+    </div>
+</div>
+{% endblock %}

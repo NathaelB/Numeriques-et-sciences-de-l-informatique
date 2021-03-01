@@ -1,0 +1,12 @@
+{% extends "./layouts/layout.html" %} {% block container %}
+
+<div class="ml-20 mt-20">
+    <table>
+        {% for p in datas %}
+        <tr class="bg-white divide-y divide-gray-200 border-l-2 border-gray-700">
+            <td class="px-6 py-4 whitespace-nowrap">Je m'appelle {{p[0].capitalize()}} j'ai {{p[1]}} ans</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

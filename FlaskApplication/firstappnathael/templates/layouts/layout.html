@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <!-- CHARGEMENT DES MODULES -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{{titre}}</title>
+    <link rel="stylesheet" href="../../static/css/tailwind.css">
+</head>
+
+<body class="">
+    <div class="">
+        <!-- NAVBAR -->
+        <div class="relative bg-white flex flex-col mx-16 px-4">
+            <div class=" border-b">
+                <div class="flex justify-between items-center py-6 md:justify-start md:space-x-10">
+        <!-- LOGO -->
+                    <div>
+                      <a href="#">
+                            <span class="sr-only">Workflow</span>
+                            <img class="h-8 w-auto sm:h-10" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg">
+                      </a>
+                    </div>
+                    <!-- Navbar Partie -->
+
+
+                    <!-- Contact Partie -->
+                    <div class="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
+                        <a href="#" class="whitespace-nowrap text-base font-medium text-gray-800 bg-gray-200 px-6 py-3 rounded-lg hover:text-black">
+                          Ajouter un Eleves
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 mb-8">
+                <nav class="h-full">
+                    <ul class="space-x-10 h-full">
+                        {% for m in menu %} {% if menu_actif == loop.index %} {% set active = "text-black font-bold" %} {% else %} {% set active = "" %} {% endif %}
+                        <a class="text-base font-medium text-gray-800 hover:text-black px-3 py-8 {{active}}" href="{{url_for(m['urlfor'])}}" title="{{m['title']}}">{{m["texte"]}}</a> {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!--
+        <div class="bg-gray-50 col-span-2 h-full fixed">
+            <div class="mt-4 ">
+                <div class="ml-14 mr-14">
+                    <h1 class="font-extrabold text-gray-900 text-2xl">Flask Application</h1>
+                </div>
+                <div class="mt-8 border-b">
+                    <nav>
+                        <ul class="flex flex-col space-y-1">
+                            {% for m in menu %} {% if menu_actif == loop.index %} {% set active = "text-indigo-600 bg-blue-50 font-bold border-l-4 border-blue-600" %} {% else %} {% set active = "" %} {% endif %}
+                            <a class="text-base font-medium text-gray-500 hover:text-gray-900 px-3 py-4 {{active}}" href="{{url_for(m['urlfor'])}}" title="{{m['title']}}">{{m["texte"]}}</a> {% endfor %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- BODY -->
+        <div class="col-start-2 col-span-4 bg-white">
+            <div class="grid grid-flow-col grid-rows-2 grid-cols-3  mt-8">
+                <div class="transform scale-110 -rotate-2 bg-gray-100 rounded-lg shadow-xl">
+                    <h2 class="text-xl font-semibold mt-4 text-gray-800 uppercase mb-4 text-center" id="titre">{{titre}}</h2>
+                </div>
+            </div>
+            <div>
+                {% block container %} {% endblock %}
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const NewsBar = document.getElementById('popup');
+        const CloseButton = document.getElementById('boutton');
+
+        window.addEventListener("load", () => {
+            CloseButton.addEventListener("click", () => {
+                NewsBar.remove()
+                window.location.href = ".{{ url_for('recherche')}}";
+                console.log("FOHEZOHFOIHZOUZ")
+            })
+        })
+    </script>
+    <script src="https://kit.fontawesome.com/e0520e4066.js " crossorigin="home "></script>
+    <script src="https://code.iconify.design/1/1.0.7/iconify.min.js "></script>
+    <!-- <script src="../../public/js/app.js"></script> -->
+</body>
+
+</html>

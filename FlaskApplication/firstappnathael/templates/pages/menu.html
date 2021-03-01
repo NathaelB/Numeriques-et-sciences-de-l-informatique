@@ -1,0 +1,52 @@
+{% block content %}
+
+<header>
+    <div class="transition ease-in-out duration-150 z-20 ">
+        <div class="invisible lg:visible fixed w-full top-0 z-50 px-4 bg-gray-100">
+            <div class="max-w-screen-xl mx-auto px-4 sm:px-6">
+                <div class="flex justify-between items-center border-b-2 border-gray-100 py-6  md:space-x-10">
+                    <nav class="flex flex-row mx-auto items-center ">
+                        <ul class="space-x-10 flex flex-row ">
+                            {% for m in menu %} {% if menu_actif == loop.index %} {% set active = "text-gray-800 font-bold" %} {% else %} {% set active = "" %} {% endif %}
+                            <a class="text-base font-medium text-gray-500 hover:text-gray-900 {{active}}" href="{{url_for(m['urlfor'])}}" title="{{m['title']}}">{{m["texte"]}}</a> {% endfor %}
+                        </ul>
+                    </nav>
+                    <div class="">
+                        <div class="ml-4 flex items-center md:ml-6">
+                            <button class="p-1 border-2 border-transparent text-gray-400 rounded-full transition ease-in-out duration-150 hover:text-gray-800 focus:outline-none focus:text-white focus:bg-gray-700" aria-label="Notifications">
+                                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                            </button>
+                            <div class="ml-3 relative">
+                                <div>
+                                    <button class="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid" id="user-menu" aria-label="User menu" aria-haspopup="true">
+                                        <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</header>
+
+
+<!-- <div class="bg-white z-50 relative">
+    <div class=" mx-auto px-4 sm:px-6">
+        <div class="flex justify-between items-center border-b-2 border-gray-100 py-6  md:space-x-10">
+            <nav class="flex flex-row space-x-10">
+                {% for m in menu %} {% if menu_actif == loop.index %} {% set active = "active" %} {% else %} {% set active = "" %} {% endif %}
+                <a class="text-base font-medium text-gray-500 hover:text-gray-900" href="{{url_for(m['urlfor'])}}" title="{{m['title']}}">{{m["texte"]}}</a> {% endfor %}
+            </nav>
+            <div class="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
+                <a href="#" class="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900">Sign in</a>
+                <a href="#" class="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">Sign up</a>
+            </div>
+        </div>
+    </div>
+</div> -->
+{% endblock %}
