@@ -157,6 +157,7 @@ def main():
     print(ee2)
     print(ee1.getCardinal())
     print(ee1.reunion(ee2))
+    print(ee1.difference(ee2))
 
 if __name__ == '__main__':
     main()
