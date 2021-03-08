@@ -6,7 +6,7 @@ class Player(ABC):
     def __init__(self, name: str, age: int):
         self._name = name
         self._age = age
-        self._silly: bool = False
+        self._dump: bool = False
 
     @abstractmethod
     def __str__(self):
@@ -19,10 +19,10 @@ class Player(ABC):
         self._name = name
 
     def isSilly(self) -> bool:
-        return self._silly == True
-    
+        return self._dump == True
+
     def alertSilly(self):
-        return self._silly == True
+        return self._dump == True
 
     def make(self):
-        return self._silly == False
+        return self._dump == False
