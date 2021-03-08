@@ -28,14 +28,20 @@ class Document(ABC):
         s = f"Mediatheque : {len(self.documents)} documents\n"
         s += f'{"index":^5}|{"document":^10}|{"titre":^26}|{"auteur/compositeur":^20}|{"interprete":^20}|{"disponible":^10}|\n'
 
-
-
     def getTitle(self) -> str:
         return self._title.capitalize()
 
     def setTitle(self, title: str):
         self._title = title
 
+    def isEmprunt(self) -> bool:
+        return self._emprunt == True
+
+    def alertEmprunt(self):
+        return self._emprunt == True
+
+    def make(self):
+        return self._emprunt == False
 
 
 class CD(Document):
@@ -82,10 +88,9 @@ class Mediatheque:
         :return:
         """
         s = f'{"index":^8}|{"document":^10}|{"titre":^26}|{"auteur/compositeur":^20}|{"interprete":^20}|{"disponible":^13}|\n'
-        for i,d in enumerate(self._documents):
+        for i, d in enumerate(self._documents):
             s += f"{i:<8}|" + str(d)
         return s
-
 
     def add(self, d: 'Document'):
         """
@@ -96,10 +101,10 @@ class Mediatheque:
         :param d:
         :return:
         """
-        if self.search(d.getTitle()): return "Le document existe déjà"
-        else: self._documents.append(d)
-
-
+        if self.search(d.getTitle()):
+            return "Le document existe déjà"
+        else:
+            self._documents.append(d)
 
     def search(self, title: str) -> bool:
         """
@@ -128,12 +133,11 @@ class Mediatheque:
                 On vérifie si le compositeur du document
                 est bien celui recherché
                 """
-                cd: CD = self._documents[i]
+                cd: CD = self._documents[i]  # Permet ici de récupérer les méthodes de la class CD
                 if cd.getCompositor() == c: return True
 
     def get_document(self):
         return self._documents
-
 
 
 class Empruntlivre(object):
@@ -150,12 +154,12 @@ class Adherent(object):
 
 def main():
     l = Livre("les misérables", "Victor Hugo")
-    print(l)
+    l2 = Livre("Choucroute", "Florien la pute")
     cd = CD("j'aime le code", "Nathaël Bonnal", "Thomas meyer")
-    print(cd)
     media = Mediatheque()
 
     media.add(l)
+    media.add(l2)
     print(media)
     # d = Document("chapichapo") # L'erreur est normal, on bloque
     # print(d)
