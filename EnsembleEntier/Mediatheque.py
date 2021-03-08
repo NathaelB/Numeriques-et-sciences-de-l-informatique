@@ -34,10 +34,10 @@ class Document(ABC):
     def setTitle(self, title: str):
         self._title = title
 
-    def isEmprunt(self) -> bool:
+    def isEmprunt(self) -> bool:  # est déjà emprunté
         return self._emprunt == True
 
-    def alertEmprunt(self):
+    def alertEmprunt(self):  # nous signale si il est alerté
         return self._emprunt == True
 
     def make(self):
@@ -57,6 +57,8 @@ class CD(Document):
         return self._compositor
 
 
+
+
 class Livre(Document):
     def __init__(self, title: str, author: str):
         super().__init__(title)
@@ -73,8 +75,8 @@ class Livre(Document):
     def getAuthor(self):
         return self._author
 
-    def addAuthor(self):
-        pass
+    def setAuthor(self, author: str):
+        self._author = author
 
     def isEmprunt(self) -> 'Empruntlivre':
         self.alertEmprunt()
@@ -140,10 +142,11 @@ class Mediatheque:
                 cd: CD = self._documents[i]  # Permet ici de récupérer les méthodes de la class CD
                 if cd.getCompositor() == c: return True
 
-    def get_document(self):
-        return self._documents
-
-
+    def getDocument(self, index) -> 'Document':
+        try:
+            return self._documents[index]
+        except:
+            return f"L'index est hors plage"
 
 
 class Empruntlivre(object):
