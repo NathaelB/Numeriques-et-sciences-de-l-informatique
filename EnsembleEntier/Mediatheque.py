@@ -56,7 +56,14 @@ class CD(Document):
     def getCompositor(self):
         return self._compositor
 
+    def setCompositor(self, compositor: str):
+        self._compositor = compositor
 
+    def getInterprete(self):
+        return self._interpret
+
+    def setInterprete(self, interprete: str):
+        self._interpret = interprete
 
 
 class Livre(Document):
@@ -146,11 +153,41 @@ class Mediatheque:
         try:
             return self._documents[index]
         except:
-            return f"L'index est hors plage"
+            return f"L'index '{index}' est hors plage"
 
 
-class Empruntlivre(object):
-    pass
+class Emprunt(ABC):
+    @abstractmethod
+    def __init__(self, dateEmprunt: date, doc: Document, nbDayMake: int):
+        self._dateEmprunt = dateEmprunt
+        self._doc = doc
+        self._nbDayMake = nbDayMake
+
+    def __str__(self):
+        pass
+
+    def isLate(self) -> bool:
+        pass
+
+    def empruntTerminate(self) -> 'Document':
+        pass
+
+    def getDoc(self) -> 'Document':
+        return self._doc
+
+
+class Empruntlivre(Emprunt):
+    def __init__(self, dateEmprunt: date, doc: Livre, nbDayMake: int):
+        super().__init__(dateEmprunt, doc, nbDayMake)
+        self._dateEmprunt = dateEmprunt
+        self._doc = doc
+
+
+class EmpruntCD(Emprunt):
+    def __init__(self, dateEmprunt: date, doc: CD, nbDayMake: int):
+        super().__init__(dateEmprunt, doc, nbDayMake)
+        self._dateEmprunt = dateEmprunt
+        self._doc = doc
 
 
 class Adherent(object):
