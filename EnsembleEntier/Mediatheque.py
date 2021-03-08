@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Union
 from datetime import date
 
 
@@ -142,7 +142,7 @@ class Mediatheque:
                 cd: CD = self._documents[i]  # Permet ici de récupérer les méthodes de la class CD
                 if cd.getCompositor() == c: return True
 
-    def getDocument(self, index) -> 'Document':
+    def getDocument(self, index: int) -> Union[Document, str]:
         try:
             return self._documents[index]
         except:
