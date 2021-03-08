@@ -76,6 +76,10 @@ class Livre(Document):
     def addAuthor(self):
         pass
 
+    def isEmprunt(self) -> 'Empruntlivre':
+        self.alertEmprunt()
+        return Empruntlivre()
+
 
 class Mediatheque:
     def __init__(self):
@@ -138,6 +142,8 @@ class Mediatheque:
 
     def get_document(self):
         return self._documents
+
+
 
 
 class Empruntlivre(object):
