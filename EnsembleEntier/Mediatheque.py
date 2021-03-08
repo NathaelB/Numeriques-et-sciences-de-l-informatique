@@ -31,10 +31,11 @@ class Document(ABC):
 
 
     def getTitle(self) -> str:
-        return self._title
+        return self._title.capitalize()
 
     def setTitle(self, title: str):
-        pass
+        self._title = title
+
 
 
 class CD(Document):
@@ -56,7 +57,12 @@ class Livre(Document):
         self._author = author
 
     def __str__(self):
-        return f"{'Livre':<10}|{self.getTitle():<26}|{self.getAuthor():<20}|{'':<20}|"
+        """
+        Sizes itself to the table header
+        so that each column is aligned
+        :return:
+        """
+        return f"{'Livre':<10}|{self.getTitle():<26}|{self.getAuthor():<20}|{'':<20}|/n"
 
     def getAuthor(self):
         return self._author
@@ -70,6 +76,11 @@ class Mediatheque:
         self._documents: List[Document] = []
 
     def __str__(self):
+        """
+        Create the top of the table with the
+        title of each column and its spacing.
+        :return:
+        """
         s = f'{"index":^8}|{"document":^10}|{"titre":^26}|{"auteur/compositeur":^20}|{"interprete":^20}|{"disponible":^13}|\n'
         for i,d in enumerate(self._documents):
             s += f"{i:<8}|" + str(d)
