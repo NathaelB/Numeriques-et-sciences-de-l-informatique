@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Union
-from datetime import date
+from datetime import date, timedelta
 
 
 class Document(ABC):
@@ -34,13 +34,19 @@ class Document(ABC):
     def setTitle(self, title: str):
         self._title = title
 
-    def isEmprunt(self) -> bool:  # est déjà emprunté
+    def getEmprunt(self):
+        if self._emprunt == False:
+            return f"Non"
+        else:
+            return f"Oui"
+
+    def isEmprunt(self) -> bool:  # emprunte le doc
         return self._emprunt == True
 
     def alertEmprunt(self):  # nous signale si il est alerté
         return self._emprunt == True
 
-    def make(self):
+    def giveBack(self):
         return self._emprunt == False
 
 
@@ -51,7 +57,8 @@ class CD(Document):
         self._compositor = compositor
 
     def __str__(self):
-        return f"Le nom du cd: {self._title}\nL'interprète du cd: {self._interpret}\nLe compositeur du cd: {self._compositor}"
+
+        return f"\n{'':^8}|{'CD':<10}|{self.getTitle():<26}|{self._compositor:<20}|{'':<20}|{self._interpret: <20}"
 
     def getCompositor(self):
         return self._compositor
@@ -77,7 +84,7 @@ class Livre(Document):
         so that each column is aligned
         :return:
         """
-        return f"{'Livre':<10}|{self.getTitle():<26}|{self.getAuthor():<20}|{'':<20}|/n"
+        return f"{'Livre':<10}|{self.getTitle():<26}|{self.getAuthor():<20}|{'':<20}|\n"
 
     def getAuthor(self):
         return self._author
@@ -159,43 +166,67 @@ class Mediatheque:
 class Emprunt(ABC):
     @abstractmethod
     def __init__(self, dateEmprunt: date, doc: Document, nbDayMake: int):
-        self._dateEmprunt = dateEmprunt
         self._doc = doc
         self._nbDayMake = nbDayMake
+        self._dateEmprunt = dateEmprunt
 
     def __str__(self):
-        pass
+        s = f"|{'Document':^10}|{'Titre':^26}|{'Auteur':^20}|{' ':<20}|{'Disponibilité':<15}|{'Date':<15}|\n"
+        s += f"{self._doc.__str__():^81}{self._doc.getEmprunt():^15}|{self._dateEmprunt}|"
+        return s
 
     def isLate(self) -> bool:
-        pass
+        return (date.today() - self._dateEmprunt).days <= self._nbDayMake
 
     def empruntTerminate(self) -> 'Document':
-        pass
+        self._doc.giveBack()
+        return self._doc
 
     def getDoc(self) -> 'Document':
         return self._doc
 
 
 class Empruntlivre(Emprunt):
-    def __init__(self, dateEmprunt: date, doc: Livre, nbDayMake: int):
-        super().__init__(dateEmprunt, doc, nbDayMake)
-        self._dateEmprunt = dateEmprunt
-        self._doc = doc
+    def __init__(self, doc: Livre):
+        super().__init__(date.today(), doc, 10)
 
 
 class EmpruntCD(Emprunt):
-    def __init__(self, dateEmprunt: date, doc: CD, nbDayMake: int):
-        super().__init__(dateEmprunt, doc, nbDayMake)
-        self._dateEmprunt = dateEmprunt
-        self._doc = doc
+    def __init__(self, doc: CD):
+        super().__init__(date.today(), doc, 15)
 
 
-class Adherent(object):
-    def emprunter(self, param):
-        pass
+class Adherent:
+    def __init__(self, name: str):
+        self._name = name
+        self._borrowingInProgress: List[Emprunt] = []
 
-    def terminer_emprunt(self, param):
-        pass
+    def isLate(self) -> bool:
+        for emprunt in self._borrowingInProgress:
+            if emprunt.isLate():
+                return True
+        return False
+
+    def borrowingTrue(self) -> bool:
+        return not self.isLate() and len(self._borrowingInProgress) < 5
+
+    def emprunter(self, doc: Document):
+        if self._borrowingInProgress is True:
+            if isinstance(doc, Livre):
+                self._borrowingInProgress.append(Empruntlivre(doc))
+            if isinstance(doc, CD):
+                self._borrowingInProgress.append(EmpruntCD(doc))
+        else:
+            print("Tu ne peux pas wesh :p")
+
+
+    def terminer_emprunt(self, index: int):
+        try:
+            self._borrowingInProgress[index].empruntTerminate()
+            self._borrowingInProgress.pop(index)
+        except:
+            return False
+
 
 
 def main():
@@ -207,39 +238,37 @@ def main():
     media.add(l)
     media.add(l2)
     print(media)
-    # d = Document("chapichapo") # L'erreur est normal, on bloque
-    # print(d)
 
-    # e = Empruntlivre(date.today(), l)
-    # m = Mediatheque()
-    # m.add(l)
-    # m.add(Livre("Essais", "Montaigne"))
-    # m.add(Livre("Le bois", "Jacques Dutronc"))
-    # m.add(Livre("Le silence", "Thomas Meyer"))
-    # m.add(Livre("Parler", "Nathaël Bonnal"))
-    # m.add(Livre("Les boucles", "Kevin Terrison"))
-    # m.add(Livre("Douceur du code", "Thélio Doucet"))
-    # m.add(CD("j'aime le code", "Nathaël Bonnal", "Thomas meyer"))
-    # m.add(CD("Quand j'étais petit codeur", "Thélio Doucet", "Thélio Doucet"))
-    # m.add(CD("Le rap du codeur", "Kevin Terrison", "Thomas Meyer"))
-    # m.add(CD("Silence on code", "Thomas Meyer", "Nathaël Bonnal"))
-    # m.add(CD("print print print", "Nathaël Bonnal", "Thélio Doucet"))
-    # print(m.search(m.get_document(8).get_titre()))
-    # pierre = Adherent("Pierre")
-    # pierre.emprunter(m.get_document(8))
-    # print(pierre)
-    # print(m)
-    # pierre.emprunter(m.get_document(1))
-    # pierre.emprunter(m.get_document(2))
-    # pierre.emprunter(m.get_document(9))
-    # pierre.emprunter(m.get_document(8))
-    # pierre.emprunter(m.get_document(11))
-    # pierre.emprunter(m.get_document(0))
-    # print(pierre)
-    # print(m)
-    # pierre.terminer_emprunt(0)
-    # print(pierre)
-    # print(m)
+
+    m = Mediatheque()
+    m.add(l)
+    m.add(Livre("Essais", "Montaigne"))
+    m.add(Livre("Le bois", "Jacques Dutronc"))
+    m.add(Livre("Le silence", "Thomas Meyer"))
+    m.add(Livre("Parler", "Nathaël Bonnal"))
+    m.add(Livre("Les boucles", "Kevin Terrison"))
+    m.add(Livre("Douceur du code", "Thélio Doucet"))
+    m.add(CD("j'aime le code", "Nathaël Bonnal", "Thomas meyer"))
+    m.add(CD("Quand j'étais petit codeur", "Thélio Doucet", "Thélio Doucet"))
+    m.add(CD("Le rap du codeur", "Kevin Terrison", "Thomas Meyer"))
+    m.add(CD("Silence on code", "Thomas Meyer", "Nathaël Bonnal"))
+    m.add(CD("print print print", "Nathaël Bonnal", "Thélio Doucet"))
+    print(m.search(m.getDocument(8).getTitle()))
+    pierre = Adherent("Pierre")
+    pierre.emprunter(m.getDocument(8))
+    print(pierre)
+    print(m)
+    pierre.emprunter(m.getDocument(1))
+    pierre.emprunter(m.getDocument(2))
+    pierre.emprunter(m.getDocument(9))
+    pierre.emprunter(m.getDocument(8))
+    pierre.emprunter(m.getDocument(11))
+    pierre.emprunter(m.getDocument(5))
+    print(pierre)
+    print(m)
+    pierre.terminer_emprunt(0)
+    print(pierre)
+    print(m)
 
 
 if __name__ == '__main__':
