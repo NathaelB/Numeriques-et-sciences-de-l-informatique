@@ -34,20 +34,25 @@ class Document(ABC):
     def setTitle(self, title: str):
         self._title = title
 
-    def getEmprunt(self):
-        if self._emprunt == False:
-            return f"Non"
-        else:
-            return f"Oui"
 
-    def isEmprunt(self) -> bool:  # emprunte le doc
-        return self._emprunt == True
+    def isEmprunt(self) -> bool:  # emprunte le doc (estEmprunt)
+        return self._emprunt
 
     def alertEmprunt(self):  # nous signale si il est alerté
         return self._emprunt == True
 
     def giveBack(self):
         return self._emprunt == False
+
+    def getEmprunt(self):
+        if not self.isEmprunt():
+            return f"Oui"
+        else:
+            return f"Non"
+
+    @abstractmethod
+    def emprunter(self):
+        pass
 
 
 class CD(Document):
@@ -58,7 +63,7 @@ class CD(Document):
 
     def __str__(self):
 
-        return f"\n{'':^8}|{'CD':<10}|{self.getTitle():<26}|{self._compositor:<20}|{'':<20}|{self._interpret: <20}"
+        return f"{'CD':^10}|{self.getTitle():^26}|{self._compositor:^20}|{self._interpret: ^20}|{self.getEmprunt():^13}|\n"
 
     def getCompositor(self):
         return self._compositor
@@ -72,6 +77,10 @@ class CD(Document):
     def setInterprete(self, interprete: str):
         self._interpret = interprete
 
+    def emprunter(self) -> 'EmpruntCD':
+        self.alertEmprunt()
+        return EmpruntCD(self)
+
 
 class Livre(Document):
     def __init__(self, title: str, author: str):
@@ -84,7 +93,7 @@ class Livre(Document):
         so that each column is aligned
         :return:
         """
-        return f"{'Livre':<10}|{self.getTitle():<26}|{self.getAuthor():<20}|{'':<20}|\n"
+        return f"{'Livre':^10}|{self.getTitle():^26}|{self.getAuthor():^20}|{'':<20}|{self.getEmprunt():^13}|\n"
 
     def getAuthor(self):
         return self._author
@@ -92,9 +101,9 @@ class Livre(Document):
     def setAuthor(self, author: str):
         self._author = author
 
-    def isEmprunt(self) -> 'Empruntlivre':
+    def emprunter(self) -> 'Empruntlivre':
         self.alertEmprunt()
-        return Empruntlivre()
+        return Empruntlivre(self)
 
 
 class Mediatheque:
@@ -107,9 +116,12 @@ class Mediatheque:
         title of each column and its spacing.
         :return:
         """
-        s = f'{"index":^8}|{"document":^10}|{"titre":^26}|{"auteur/compositeur":^20}|{"interprete":^20}|{"disponible":^13}|\n'
+        s = '/------------------------------------------------------------------------------------------------------\ \n'
+        s += f'|{"index":^8}|{"document":^10}|{"titre":^26}|{"auteur/compositeur":^20}|{"interprete":^20}|{"disponible":^13}|\n'
+        s += '|------------------------------------------------------------------------------------------------------|\n'
         for i, d in enumerate(self._documents):
-            s += f"{i:<8}|" + str(d)
+            s += f"|{i:<8}|" + str(d)
+        s +="\------------------------------------------------------------------------------------------------------/"
         return s
 
     def add(self, d: 'Document'):
@@ -183,7 +195,9 @@ class Emprunt(ABC):
         return self._doc
 
     def getDoc(self) -> 'Document':
-        return self._doc
+        return self._doc.getEmprunt()
+
+
 
 
 class Empruntlivre(Emprunt):
@@ -212,12 +226,16 @@ class Adherent:
 
     def emprunter(self, doc: Document):
         if self._borrowingInProgress is True:
-            if isinstance(doc, Livre):
-                self._borrowingInProgress.append(Empruntlivre(doc))
-            if isinstance(doc, CD):
-                self._borrowingInProgress.append(EmpruntCD(doc))
+            self._borrowingInProgress.append(doc.emprunter())
+
+            # if isinstance(doc, Livre):
+            #     self._borrowingInProgress.append(Empruntlivre(doc))
+            #     doc.alertEmprunt()
+            # if isinstance(doc, CD):
+            #     self._borrowingInProgress.append(EmpruntCD(doc))
+            #     doc.alertEmprunt()
         else:
-            print("Tu ne peux pas wesh :p")
+            print("[!] Ce livre est déjà emprunté")
 
 
     def terminer_emprunt(self, index: int):
@@ -227,17 +245,9 @@ class Adherent:
         except:
             return False
 
-
-
 def main():
     l = Livre("les misérables", "Victor Hugo")
-    l2 = Livre("Choucroute", "Florien la pute")
-    cd = CD("j'aime le code", "Nathaël Bonnal", "Thomas meyer")
-    media = Mediatheque()
 
-    media.add(l)
-    media.add(l2)
-    print(media)
 
 
     m = Mediatheque()
@@ -255,19 +265,10 @@ def main():
     m.add(CD("print print print", "Nathaël Bonnal", "Thélio Doucet"))
     print(m.search(m.getDocument(8).getTitle()))
     pierre = Adherent("Pierre")
-    pierre.emprunter(m.getDocument(8))
-    print(pierre)
-    print(m)
     pierre.emprunter(m.getDocument(1))
     pierre.emprunter(m.getDocument(2))
-    pierre.emprunter(m.getDocument(9))
-    pierre.emprunter(m.getDocument(8))
-    pierre.emprunter(m.getDocument(11))
-    pierre.emprunter(m.getDocument(5))
-    print(pierre)
-    print(m)
+    pierre.emprunter(m.getDocument(3))
     pierre.terminer_emprunt(0)
-    print(pierre)
     print(m)
 
 
