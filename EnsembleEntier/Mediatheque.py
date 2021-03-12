@@ -215,6 +215,14 @@ class Adherent:
         self._name = name
         self._borrowingInProgress: List[Emprunt] = []
 
+    def __str__(self):
+        s = f"Adhérent: {self._name}"
+        s += f"{'index':^6}|{'Document:^10'}|{'titre': ^26}|{'Auteur / Compositeur': ^20}|{'Depuis le':^12}|{'Retour le':^12}\n"
+        for index, d in enumerate(self.)
+        # for i in range(len(self._borrowingInProgress)):
+        #     s = f"test"
+        return s
+
     def isLate(self) -> bool:
         for emprunt in self._borrowingInProgress:
             if emprunt.isLate():
@@ -225,7 +233,7 @@ class Adherent:
         return not self.isLate() and len(self._borrowingInProgress) < 5
 
     def emprunter(self, doc: Document):
-        if self._borrowingInProgress is True:
+        if self.borrowingTrue() is True:
             self._borrowingInProgress.append(doc.emprunter())
 
             # if isinstance(doc, Livre):
@@ -270,6 +278,7 @@ def main():
     pierre.emprunter(m.getDocument(3))
     pierre.terminer_emprunt(0)
     print(m)
+    print(pierre)
 
 
 if __name__ == '__main__':
