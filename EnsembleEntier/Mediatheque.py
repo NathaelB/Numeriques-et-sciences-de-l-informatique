@@ -39,7 +39,7 @@ class Document(ABC):
         return self._emprunt
 
     def alertEmprunt(self):  # nous signale si il est alerté
-        return self._emprunt == True
+        self._emprunt = True
 
     def giveBack(self):
         return self._emprunt == False
@@ -183,12 +183,11 @@ class Emprunt(ABC):
         self._dateEmprunt = dateEmprunt
 
     def __str__(self):
-        s = f"|{'Document':^10}|{'Titre':^26}|{'Auteur':^20}|{' ':<20}|{'Disponibilité':<15}|{'Date':<15}|\n"
-        s += f"{self._doc.__str__():^81}{self._doc.getEmprunt():^15}|{self._dateEmprunt}|"
+        s = f"{self._doc.__str__()[:80]:^80}{str(self._dateEmprunt):^15}|{str(timedelta(days= self._nbDayMake) + self._dateEmprunt):^15}|\n"
         return s
 
     def isLate(self) -> bool:
-        return (date.today() - self._dateEmprunt).days <= self._nbDayMake
+        return (date.today() - self._dateEmprunt).days >= self._nbDayMake
 
     def empruntTerminate(self) -> 'Document':
         self._doc.giveBack()
@@ -216,11 +215,10 @@ class Adherent:
         self._borrowingInProgress: List[Emprunt] = []
 
     def __str__(self):
-        s = f"Adhérent: {self._name}"
-        s += f"{'index':^6}|{'Document:^10'}|{'titre': ^26}|{'Auteur / Compositeur': ^20}|{'Depuis le':^12}|{'Retour le':^12}\n"
-        for index, d in enumerate(self.)
-        # for i in range(len(self._borrowingInProgress)):
-        #     s = f"test"
+        s = f"Adhérent: {self._name}\n"
+        s += f"/{'index':^6}|{'Document':^10}|{'titre': ^26}|{'auteur/compositeur': ^20}|{'Interprete':20}|{'Depuis le':^15}|{'Retour le':^15}\ \n"
+        for index, d in enumerate(self._borrowingInProgress):
+            s += f"|{index:^6}|{str(d)}"
         return s
 
     def isLate(self) -> bool:
@@ -230,18 +228,12 @@ class Adherent:
         return False
 
     def borrowingTrue(self) -> bool:
-        return not self.isLate() and len(self._borrowingInProgress) < 5
+        return len(self._borrowingInProgress) < 5
 
     def emprunter(self, doc: Document):
-        if self.borrowingTrue() is True:
+        if self.borrowingTrue() is True and not self.isLate():
             self._borrowingInProgress.append(doc.emprunter())
-
-            # if isinstance(doc, Livre):
-            #     self._borrowingInProgress.append(Empruntlivre(doc))
-            #     doc.alertEmprunt()
-            # if isinstance(doc, CD):
-            #     self._borrowingInProgress.append(EmpruntCD(doc))
-            #     doc.alertEmprunt()
+            doc.alertEmprunt()
         else:
             print("[!] Ce livre est déjà emprunté")
 
@@ -254,12 +246,10 @@ class Adherent:
             return False
 
 def main():
-    l = Livre("les misérables", "Victor Hugo")
 
 
 
     m = Mediatheque()
-    m.add(l)
     m.add(Livre("Essais", "Montaigne"))
     m.add(Livre("Le bois", "Jacques Dutronc"))
     m.add(Livre("Le silence", "Thomas Meyer"))
@@ -276,9 +266,14 @@ def main():
     pierre.emprunter(m.getDocument(1))
     pierre.emprunter(m.getDocument(2))
     pierre.emprunter(m.getDocument(3))
-    pierre.terminer_emprunt(0)
-    print(m)
+    pierre.emprunter(m.getDocument(4))
+    pierre.emprunter(m.getDocument(7))
+    e = EmpruntCD(m.getDocument(7))
     print(pierre)
+    print('\n\n\n\n\n\n\n')
+    pierre.terminer_emprunt(0)
+    print(pierre)
+    print(m)
 
 
 if __name__ == '__main__':
