@@ -29,22 +29,46 @@ class Document(ABC):
         s += f'{"index":^5}|{"document":^10}|{"titre":^26}|{"auteur/compositeur":^20}|{"interprete":^20}|{"disponible":^10}|\n'
 
     def getTitle(self) -> str:
+        """
+        Récupère le titre du document
+        avec comme sa première lettre en majuscules
+        """
         return self._title.capitalize()
 
     def setTitle(self, title: str):
+        """
+        Définis le titre d'un document
+        :param title:
+        :return:
+        """
         self._title = title
 
 
-    def isEmprunt(self) -> bool:  # emprunte le doc (estEmprunt)
+    def isEmprunt(self):
         return self._emprunt
 
-    def alertEmprunt(self):  # nous signale si il est alerté
+    def setEmprunt(self):
+        """
+        Définis que le document est
+        emprunté
+        :return:
+        """
         self._emprunt = True
 
     def giveBack(self):
+        """
+        Redonne le document
+        :return:
+        """
         return self._emprunt == False
 
     def getEmprunt(self):
+        """
+        Méthode permettant
+        de nous informer si tel document est
+        disponible oui ou non
+        :return:
+        """
         if not self.isEmprunt():
             return f"Oui"
         else:
@@ -52,6 +76,10 @@ class Document(ABC):
 
     @abstractmethod
     def emprunter(self):
+        """
+        Décoratrice pour pour la
+        méthode emprunt dans Adhérent
+        """
         pass
 
 
@@ -66,19 +94,37 @@ class CD(Document):
         return f"{'CD':^10}|{self.getTitle():^26}|{self._compositor:^20}|{self._interpret: ^20}|{self.getEmprunt():^13}|\n"
 
     def getCompositor(self):
+        """
+        Récupère le Compositeur
+        :return:
+        """
         return self._compositor
 
     def setCompositor(self, compositor: str):
+        """
+        Définis le Compositeur
+        :param compositor:
+        :return:
+        """
         self._compositor = compositor
 
     def getInterprete(self):
+        """
+        Récupère l'interprete
+        :return:
+        """
         return self._interpret
 
     def setInterprete(self, interprete: str):
+        """
+        Définis l'Interprète
+        :param interprete:
+        :return:
+        """
         self._interpret = interprete
 
     def emprunter(self) -> 'EmpruntCD':
-        self.alertEmprunt()
+        self.setEmprunt()
         return EmpruntCD(self)
 
 
@@ -99,10 +145,16 @@ class Livre(Document):
         return self._author
 
     def setAuthor(self, author: str):
+        """
+        Détermine l'auteur sur
+        un document
+        :param author:
+        :return:
+        """
         self._author = author
 
     def emprunter(self) -> 'Empruntlivre':
-        self.alertEmprunt()
+        self.setEmprunt()
         return Empruntlivre(self)
 
 
@@ -141,7 +193,7 @@ class Mediatheque:
     def search(self, title: str) -> bool:
         """
         Allows you to search for a document
-        :param doc:
+        :param title:
         :return:
         """
         for i in range(len(self._documents)):
@@ -169,6 +221,15 @@ class Mediatheque:
                 if cd.getCompositor() == c: return True
 
     def getDocument(self, index: int) -> Union[Document, str]:
+        """
+        Permet de récupérer le document via un
+        index
+
+        Il return soit un Document si il trouve via l'index
+        soit une erreur programmé grâce au try & except
+        :param index:
+        :return:
+        """
         try:
             return self._documents[index]
         except:
@@ -187,16 +248,26 @@ class Emprunt(ABC):
         return s
 
     def isLate(self) -> bool:
+        """
+        Vérifie si l'Emprunt est en retard
+        :return:
+        """
         return (date.today() - self._dateEmprunt).days >= self._nbDayMake
 
     def empruntTerminate(self) -> 'Document':
+        """
+        Rend le document via la fonction giveBack
+        :return:
+        """
         self._doc.giveBack()
         return self._doc
 
-    def getDoc(self) -> 'Document':
+    def getDoc(self) -> str:
+        """
+        Return le document
+        :return:
+        """
         return self._doc.getEmprunt()
-
-
 
 
 class Empruntlivre(Emprunt):
@@ -216,24 +287,43 @@ class Adherent:
 
     def __str__(self):
         s = f"Adhérent: {self._name}\n"
-        s += f"/{'index':^6}|{'Document':^10}|{'titre': ^26}|{'auteur/compositeur': ^20}|{'Interprete':20}|{'Depuis le':^15}|{'Retour le':^15}\ \n"
+        s += '/----------------------------------------------------------------------------------------------------------------------\ \n'
+        s += f"|{'index':^6}|{'Document':^10}|{'titre': ^26}|{'auteur/compositeur': ^20}|{'Interprete':20}|{'Depuis le':^15}|{'Retour le':^15}| \n"
+        s += '|----------------------------------------------------------------------------------------------------------------------|\n'
         for index, d in enumerate(self._borrowingInProgress):
             s += f"|{index:^6}|{str(d)}"
+        s += "\----------------------------------------------------------------------------------------------------------------------/"
         return s
 
     def isLate(self) -> bool:
+        """
+        Vérifie si le document est
+        en retard
+        :return:
+        """
         for emprunt in self._borrowingInProgress:
             if emprunt.isLate():
                 return True
         return False
 
     def borrowingTrue(self) -> bool:
+        """
+        Vérifie si l'Adhérent n'a pas plus de
+        5 documents
+        :return:
+        """
         return len(self._borrowingInProgress) < 5
 
     def emprunter(self, doc: Document):
+        """
+        Méthode permettant d'emprunter
+        un document présent dans la médiathèque
+        :param doc:
+        :return:
+        """
         if self.borrowingTrue() is True and not self.isLate():
             self._borrowingInProgress.append(doc.emprunter())
-            doc.alertEmprunt()
+            doc.setEmprunt()
         else:
             print("[!] Ce livre est déjà emprunté")
 
@@ -268,7 +358,6 @@ def main():
     pierre.emprunter(m.getDocument(3))
     pierre.emprunter(m.getDocument(4))
     pierre.emprunter(m.getDocument(7))
-    e = EmpruntCD(m.getDocument(7))
     print(pierre)
     print('\n\n\n\n\n\n\n')
     pierre.terminer_emprunt(0)
