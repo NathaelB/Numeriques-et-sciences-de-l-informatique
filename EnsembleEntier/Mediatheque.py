@@ -329,11 +329,18 @@ class Adherent:
 
 
     def terminer_emprunt(self, index: int):
+        """
+        Afin d'éviter une erreur du fait que si l'index serait hors de plage
+        on met sous try le code de la fonction
+        Et si ce dernier n'arrive pas à s'excétuer on anticipe dont l'erreur
+        :param index:
+        :return:
+        """
         try:
             self._borrowingInProgress[index].empruntTerminate()
             self._borrowingInProgress.pop(index)
         except:
-            return False
+            return f"[!] Error : Index hors plage"
 
 def main():
 
